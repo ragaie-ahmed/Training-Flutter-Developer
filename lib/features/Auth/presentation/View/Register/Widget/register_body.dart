@@ -20,7 +20,6 @@ class RegisterBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. توفير الـ Cubit في أعلى الشجرة
     return BlocProvider(
       create: (context) => RegisterCubit(getit.get<RegisterUseCase>()),
       child: const _RegisterForm(),
