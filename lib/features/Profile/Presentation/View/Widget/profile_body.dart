@@ -1,38 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:tharadtech/core/api/service_locator.dart';
+import 'package:tharadtech/core/errors/show_app_snack_bar.dart';
 import 'package:tharadtech/core/helper/app_locclization.dart';
+import 'package:tharadtech/core/helper/on_generate_routes.dart';
+import 'package:tharadtech/core/utils/constant.dart';
+import 'package:tharadtech/features/Auth/domain/usecase/log_out_use_case.dart';
+import 'package:tharadtech/features/Auth/presentation/manage/logout/log_out_cubit.dart';
 import 'package:tharadtech/features/Profile/Presentation/View/Widget/profile_form.dart';
 import 'package:tharadtech/features/Profile/Presentation/View/Widget/language_selector.dart';
 import 'package:tharadtech/features/Profile/Presentation/manage/profile_cubit.dart';
+import 'package:tharadtech/features/Profile/data/model/profile_user_model.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context)!;
-    final themeColor = const Color(0xFF1B523D);
+    final localization = AppLocalizations.of(context);
+    const themeColor = Color(0xFF1B523D);
+    final cubit = context.read<ProfileCubit>();
+
+    
+    if (cubit.userInMemo == null && cubit.state is! ProfileGetLoading) {
+      cubit.getProfile();
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (prev, curr) =>
-        curr is ProfileUpdateLoaded || curr is ProfileUpdateError || curr is ProfileGetError,
-        listener: (context, state) {
-          if (state is ProfileUpdateLoaded) {
-            _showSnackBar(context, localization.translate('profile_updated_success'), Colors.green, Icons.check_circle);
-            // إعادة جلب البيانات لتحديث الـ UI بالبيانات الجديدة
-            ProfileCubit.get(context).getProfile();
-          } else if (state is ProfileUpdateError) {
-            _showSnackBar(context, state.error, Colors.red, Icons.error);
-          }
-        },
         buildWhen: (prev, curr) =>
-        curr is ProfileGetLoaded || curr is ProfileGetLoading || curr is ProfileGetError || curr is ProfileUpdateLoaded,
+        curr is ProfileGetLoaded || curr is ProfileGetLoading || curr is ProfileGetError,
+        listenWhen: (prev, curr) =>
+        curr is ProfileUpdateLoaded || curr is ProfileUpdateError,
+        listener: (context, state) => _onUpdateState(context, state, localization),
         builder: (context, state) {
+          final user = cubit.userInMemo;
+
           return RefreshIndicator(
-            onRefresh: () => ProfileCubit.get(context).getProfile(),
+            onRefresh: () => cubit.getProfile(),
             color: themeColor,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -40,17 +49,9 @@ class ProfileBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLanguageButton(context, localization),
+                  _buildTopBar(context, localization),
                   SizedBox(height: 20.h),
-
-                  if (state is ProfileGetLoaded)
-                    ProfileForm(profileUserModel: state.profileUserModel)
-                  else if (state is ProfileGetLoading)
-                      _buildLoadingState(themeColor)
-                    else if (state is ProfileGetError)
-                        _buildErrorState(state.error, themeColor, context)
-                      else
-                        const SizedBox.shrink(),
+                  _buildMainContent(state, user, themeColor, context),
                 ],
               ),
             ),
@@ -60,42 +61,86 @@ class ProfileBody extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageButton(BuildContext context, AppLocalizations localization) {
+  Widget _buildMainContent(ProfileState state, ProfileUserModel? user, Color color, BuildContext context) {
+    if (user != null) return ProfileForm(profileUserModel: user);
+    if (state is ProfileGetLoading) return _buildLoadingState(color);
+    if (state is ProfileGetError) return _buildErrorState(state.error, color, context);
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildTopBar(BuildContext context, AppLocalizations localization) {
+    return Align(
+      alignment: AlignmentDirectional.topEnd,
+      child: _buildLanguageButton(context, localization),
+    );
+  }
+
+  void _onUpdateState(BuildContext context, ProfileState state, AppLocalizations localization) {
+    if (state is ProfileUpdateLoaded) {
+      showAppSnackBar(context: context, message: localization.translate('profile_updated_success'), isError: false);
+    } else if (state is ProfileUpdateError) {
+      showAppSnackBar(context: context, message: state.error, isError: true);
+    }
+  }
+
+  Widget _buildLanguageButton(BuildContext context, AppLocalizations loc) {
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    return BlocProvider(
+      create: (context) => LogOutCubit(getit.get<LogOutUseCase>()),
+      child: BlocConsumer<LogOutCubit, LogOutState>(
+        listener: (context, state) async {
+          if (state is LogOutLoaded) {
+            
+            context.read<ProfileCubit>().clearUserData();
+            var box = Hive.box<ProfileUserModel>(Constant.kProfileBox);
+            await box.delete(Constant.kProfileKey);
+            context.go(AppRoutes.logIn);
+          }
+          if (state is LogOutError) showAppSnackBar(context: context, message: state.error, isError: true);
+        },
+        builder: (context, state) => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildActionButton(
+              onTap: () => context.read<LogOutCubit>().logOut(),
+              label: state is LogOutLoading ? "..." : (isAr ? "تسجيل الخروج" : "Logout"),
+            ),
+            _buildActionButton(
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => LanguageBottomSheet(localization: loc),
+              ),
+              label: isAr ? "🌐 العربية" : "English 🌐",
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({required VoidCallback onTap, required String label}) {
     return GestureDetector(
-      onTap: () => showModalBottomSheet(
-        context: context,
-        builder: (context) => LanguageBottomSheet(localization: localization),
-      ),
-      child: const Text("English  🌐  ", style: TextStyle(fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildLoadingState(Color color) {
-    return Container(
-      height: 200.h,
-      alignment: Alignment.center,
-      child: CircularProgressIndicator(color: color),
-    );
-  }
-
-  Widget _buildErrorState(String error, Color color, BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text(error, style: const TextStyle(color: Colors.red)),
-          TextButton(onPressed: () => ProfileCubit.get(context).getProfile(), child: const Text("إعادة المحاولة")),
-        ],
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Text(label, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp, fontFamily: 'Tajawal')),
       ),
     );
   }
 
-  void _showSnackBar(BuildContext context, String msg, Color color, IconData icon) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(children: [Icon(icon, color: Colors.white), SizedBox(width: 10.w), Text(msg)]),
-        backgroundColor: color,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
+  Widget _buildLoadingState(Color color) => Container(height: 300.h, alignment: Alignment.center, child: CircularProgressIndicator(color: color));
+
+  Widget _buildErrorState(String error, Color color, BuildContext context) => Center(
+    child: Column(
+      children: [
+        Text(error, style: const TextStyle(color: Colors.red)),
+        TextButton(onPressed: () => context.read<ProfileCubit>().getProfile(), child: const Text("إعادة المحاولة")),
+      ],
+    ),
+  );
 }

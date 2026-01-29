@@ -16,6 +16,7 @@ abstract class RemoteDataSourceRegister {
   });
 
   Future<void> otp({required String email, required String otp});
+  Future<void>logOut();
 
   Future<void> logIn({required String email, required String passWord});
 }
@@ -79,4 +80,20 @@ class RemoteDataSourceRegisterImplementation extends RemoteDataSourceRegister {
       handleDioException(e);
     }
   }
+
+  @override
+  Future<void> logOut()async {
+    try {
+     await apiService.delete(ApiEndPoints.logout,headers: {
+       'Authorization':
+       "Bearer ${await SharedPrefService.getSecuredString(SharedPrefService.storedToken)}",
+       'Accept': 'application/json',
+      });
+
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
+  }
+
+
 }

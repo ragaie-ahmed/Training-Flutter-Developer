@@ -14,7 +14,7 @@ class RegisterError extends RegisterState {
   RegisterError({required this.error});
 }
 
-// Image Picker States
+
 class ImagePickingLoading extends RegisterState {}
 class ImagePickedSuccess extends RegisterState {
   final File image;

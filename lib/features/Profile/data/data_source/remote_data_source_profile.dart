@@ -34,12 +34,11 @@ class RemoteDataSourceProfileImplementation extends RemoteDataSourceProfile {
         ApiEndPoints.profileDetails,
         headers: {
           'Authorization':
-              "Bearer 572|ndll3Db9TVBdUmHNo01NLlyVC1I6OxohEPFFPkKy8844b284",
+              "Bearer ${await SharedPrefService.getSecuredString(SharedPrefService.storedToken)}",
         },
       );
       var responseBody = response["data"];
       var data = ProfileUserModel.fromJson(responseBody);
-
       var box = Hive.box<ProfileUserModel>(Constant.kProfileBox);
       await box.put(Constant.kProfileKey, data);
       return data;
@@ -78,7 +77,7 @@ class RemoteDataSourceProfileImplementation extends RemoteDataSourceProfile {
       data: FormData.fromMap(data),
       headers: {
         'Authorization':
-            "Bearer 572|ndll3Db9TVBdUmHNo01NLlyVC1I6OxohEPFFPkKy8844b284",
+            "Bearer ${await SharedPrefService.getSecuredString(SharedPrefService.storedToken)}",
         'Accept': 'application/json',
       },
     );

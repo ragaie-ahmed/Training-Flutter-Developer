@@ -6,9 +6,11 @@ import 'package:tharadtech/features/Auth/data/data_source/remote_data_source.dar
 import 'package:tharadtech/features/Auth/data/repo/repo_register_implementation.dart';
 import 'package:tharadtech/features/Auth/domain/repo/repo_register.dart';
 import 'package:tharadtech/features/Auth/domain/usecase/log_in_use_case.dart';
+import 'package:tharadtech/features/Auth/domain/usecase/log_out_use_case.dart';
 import 'package:tharadtech/features/Auth/domain/usecase/opt_use_case.dart';
 import 'package:tharadtech/features/Auth/domain/usecase/register_use_case.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/login/login_cubit.dart';
+import 'package:tharadtech/features/Auth/presentation/manage/logout/log_out_cubit.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/otp/otp_cubit.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/register/register_cubit.dart';
 import 'package:tharadtech/features/Profile/Presentation/manage/profile_cubit.dart';
@@ -87,5 +89,13 @@ Future<void> setupServiceLocator() async {
   );
   getit.registerFactory<ProfileCubit>(
         () => ProfileCubit(getit<GetProfileUseCase>(),getit<UpdateProfileUseCase>()),
+  );
+  //todo useCase and cubit for log Out
+  getit.registerLazySingleton<LogOutUseCase>(
+        () => LogOutUseCase(repoRegister:  getit<RepoRegister>()),
+  );
+
+  getit.registerFactory<LogOutCubit>(
+        () => LogOutCubit(getit<LogOutUseCase>()),
   );
 }

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:tharadtech/core/errors/exception.dart';
 import 'package:tharadtech/features/Auth/data/data_source/remote_data_source.dart';
-import 'package:tharadtech/features/Auth/data/model/log_in_model.dart';
 import 'package:tharadtech/features/Auth/domain/repo/repo_register.dart';
 
 class RepoRegisterImplementation extends RepoRegister {
@@ -40,6 +38,16 @@ class RepoRegisterImplementation extends RepoRegister {
   Future<Either<String, void>> logIn({required String email, required String passWord}) async{
     try {
       final result = await remoteDataSourceRegister.logIn(email: email, passWord: passWord);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, void>> logOut() async{
+    try {
+      final result = await remoteDataSourceRegister.logOut();
       return Right(result);
     } on ServerException catch (e) {
       return Left(e.errModel.errorMessage);

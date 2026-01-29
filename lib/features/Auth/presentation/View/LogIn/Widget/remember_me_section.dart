@@ -10,16 +10,16 @@ class RememberMeSection extends StatefulWidget {
 }
 
 class _RememberMeSectionState extends State<RememberMeSection> {
-  bool _isRemembered = false; // حالة الـ Checkbox
+  bool _isRemembered = false; 
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context)!;
+    final localization = AppLocalizations.of(context);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // تذكرني
+        
         Row(
           children: [
             SizedBox(
@@ -27,7 +27,7 @@ class _RememberMeSectionState extends State<RememberMeSection> {
               height: 20.h,
               child: Checkbox(
                 value: _isRemembered,
-                activeColor: const Color(0xFF4EB0AD), // لون البراند بتاعك
+                activeColor: const Color(0xFF4EB0AD), 
                 onChanged: (value) {
                   setState(() {
                     _isRemembered = value ?? false;
@@ -47,7 +47,7 @@ class _RememberMeSectionState extends State<RememberMeSection> {
                 });
               },
               child: Text(
-                localization.translate('remember_me') ?? "تذكرني",
+                localization.translate('remember_me') ,
                 style: TextStyle(
                   fontFamily: "Tajawal",
                   fontSize: 14.sp,
@@ -58,18 +58,18 @@ class _RememberMeSectionState extends State<RememberMeSection> {
           ],
         ),
 
-        // نسيت كلمة المرور
+        
         GestureDetector(
           onTap: () {
-            // TODO: Navigate to forgot password screen
+            
           },
           child: Text(
-            localization.translate('forgot_password') ?? "نسيت كلمة المرور؟",
+            localization.translate('forgot_password'),
             style: TextStyle(
               fontFamily: "Tajawal",
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF1B523D), // لون أخضر داكن متناسق
+              color: const Color(0xFF1B523D), 
               decoration: TextDecoration.underline,
             ),
           ),

@@ -9,7 +9,7 @@ class HomeContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Quick Actions Section
+        
         Text(
           "Quick Actions",
           style: TextStyle(
@@ -22,7 +22,7 @@ class HomeContent extends StatelessWidget {
         
         SizedBox(height: 16.h),
         
-        // Action Cards
+        
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -36,7 +36,7 @@ class HomeContent extends StatelessWidget {
               icon: Icons.person,
               color: Colors.blue,
               onTap: () {
-                // TODO: Navigate to profile
+                
               },
             ),
             _ActionCard(
@@ -44,7 +44,7 @@ class HomeContent extends StatelessWidget {
               icon: Icons.settings,
               color: Colors.green,
               onTap: () {
-                // TODO: Navigate to settings
+                
               },
             ),
             _ActionCard(
@@ -52,7 +52,7 @@ class HomeContent extends StatelessWidget {
               icon: Icons.notifications,
               color: Colors.orange,
               onTap: () {
-                // TODO: Navigate to notifications
+                
               },
             ),
             _ActionCard(
@@ -60,7 +60,7 @@ class HomeContent extends StatelessWidget {
               icon: Icons.help,
               color: Colors.purple,
               onTap: () {
-                // TODO: Navigate to help
+                
               },
             ),
           ],
@@ -68,7 +68,7 @@ class HomeContent extends StatelessWidget {
         
         SizedBox(height: 30.h),
         
-        // Recent Activity Section
+        
         Text(
           "Recent Activity",
           style: TextStyle(
@@ -81,7 +81,7 @@ class HomeContent extends StatelessWidget {
         
         SizedBox(height: 16.h),
         
-        // Activity List
+        
         _ActivityItem(
           title: "Login Successful",
           subtitle: "You logged in successfully",

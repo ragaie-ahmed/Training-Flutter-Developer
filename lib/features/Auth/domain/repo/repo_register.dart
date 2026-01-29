@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:tharadtech/features/Auth/data/model/log_in_model.dart';
 
 abstract class RepoRegister {
   Future<Either<String, void>> register({
@@ -21,4 +20,5 @@ abstract class RepoRegister {
     required String email,
     required String passWord,
   });
+Future<Either<String,void>>logOut();
 }

@@ -21,21 +21,15 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
 
   @override
   Future<void> cacheProfile(ProfileUserModel profile) async {
-    try {
       var box = Hive.box<ProfileUserModel>(Constant.kProfileBox);
       await box.put(Constant.kProfileKey, profile);
-    } catch (e) {
-      // Handle error if needed
-    }
+
   }
 
   @override
   Future<void> clearCache() async {
-    try {
       var box = Hive.box<ProfileUserModel>(Constant.kProfileBox);
       await box.delete(Constant.kProfileKey);
-    } catch (e) {
-      // Handle error if needed
-    }
+
   }
 }

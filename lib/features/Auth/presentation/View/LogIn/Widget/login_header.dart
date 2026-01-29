@@ -10,36 +10,26 @@ class LoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Logo
+        
         Image.asset(
           Assets.logo,
           width: 120.w,
           height: 120.h,
         ),
         
-        SizedBox(height: 40.h),
+        SizedBox(height: 30.h),
         
-        // Title
+
+        
+        
         Text(
-          "Welcome Back",
-          style: TextStyle(
-            fontFamily: "Tajawal",
-            fontSize: 28.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        
-        SizedBox(height: 12.h),
-        
-        // Subtitle
-        Text(
-          "Sign in to continue to your account",
+          "تسجيل الدخول",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: "Tajawal",
-            fontSize: 16.sp,
-            color: Colors.grey[600],
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff0D1D1E),
           ),
         ),
       ],

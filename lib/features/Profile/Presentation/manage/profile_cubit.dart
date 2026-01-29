@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,25 +11,43 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this.getProfileUseCase, this.updateProfileUseCase)
-    : super(ProfileInitial());
+      : super(ProfileInitial());
 
   static ProfileCubit get(context) => BlocProvider.of(context);
   final ImagePicker _imagePicker = ImagePicker();
 
   File? selectedImage;
+  ProfileUserModel? userInMemo;
   final GetProfileUseCase getProfileUseCase;
   final UpdateProfileUseCase updateProfileUseCase;
 
+  
+  bool oldPassWord = false;
+  bool passWord = false;
+  bool confirm = false;
+
+  void changeOldPassWord() {
+    oldPassWord = !oldPassWord;
+    emit(OldPassWordSuccessChange());
+  }
+
+  void changePassWord() {
+    passWord = !passWord;
+    emit(PassWordSuccessChange());
+  }
+
+  void changeConfirmPassWord() {
+    confirm = !confirm;
+    emit(ConfirmPassWordSuccessChange());
+  }
+
+  
   Future<void> pickImageFromGallery() async {
     emit(ImagePickedProfileLoading());
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 80,
-        maxWidth: 800,
-        maxHeight: 800,
+        source: ImageSource.gallery, imageQuality: 80, maxWidth: 800, maxHeight: 800,
       );
-
       if (pickedFile != null) {
         selectedImage = File(pickedFile.path);
         emit(ImagePickedProfileSuccess(image: selectedImage!));
@@ -38,17 +55,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ImagePickedProfileError(error: 'No image selected'));
       }
     } catch (e) {
-      String errorMessage = 'Failed to pick image';
-
-      if (e.toString().contains('permission')) {
-        errorMessage = 'Permission denied. Please grant storage access.';
-      } else if (e.toString().contains('cancelled')) {
-        errorMessage = 'Image selection was cancelled';
-      } else {
-        errorMessage = 'Failed to pick image: ${e.toString()}';
-      }
-
-      emit(ImagePickedProfileError(error: errorMessage));
+      emit(ImagePickedProfileError(error: e.toString()));
     }
   }
 
@@ -56,12 +63,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ImagePickedProfileLoading());
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
-        maxWidth: 800,
-        maxHeight: 800,
+        source: ImageSource.camera, imageQuality: 80, maxWidth: 800, maxHeight: 800,
       );
-
       if (pickedFile != null) {
         selectedImage = File(pickedFile.path);
         emit(ImagePickedProfileSuccess(image: selectedImage!));
@@ -69,17 +72,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ImagePickedProfileError(error: 'No image captured'));
       }
     } catch (e) {
-      String errorMessage = 'Failed to capture image';
-
-      if (e.toString().contains('permission')) {
-        errorMessage = 'Permission denied. Please grant camera access.';
-      } else if (e.toString().contains('cancelled')) {
-        errorMessage = 'Camera capture was cancelled';
-      } else {
-        errorMessage = 'Failed to capture image: ${e.toString()}';
-      }
-      (errorMessage);
-      emit(ImagePickedProfileError(error: errorMessage));
+      emit(ImagePickedProfileError(error: e.toString()));
     }
   }
 
@@ -88,16 +81,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ImagePickedProfileRemoved());
   }
 
-  ProfileUserModel? userInMemo;
-
+  
   Future<void> getProfile() async {
+    
     if (userInMemo == null) emit(ProfileGetLoading());
 
     var data = await getProfileUseCase.execute();
     data.fold(
-          (error) {
-        if (userInMemo == null) emit(ProfileGetError(error: error));
-      },
+          (error) => emit(ProfileGetError(error: error)),
           (data) {
         userInMemo = data;
         emit(ProfileGetLoaded(profileUserModel: data));
@@ -123,33 +114,24 @@ class ProfileCubit extends Cubit<ProfileState> {
       image: image,
     );
     data.fold(
-      (error) {
-        emit(ProfileGetError(error: error));
+          (error) {
+        
+        emit(ProfileUpdateError(error: error));
       },
-      (r) async {
+          (r) async {
         selectedImage = null;
-        await getProfile();
         emit(ProfileUpdateLoaded());
+        await getProfile(); 
       },
     );
   }
 
-  bool oldPassWord = false;
-  bool passWord = false;
-  bool confirm = false;
-
-  void changeOldPassWord() {
-    oldPassWord = !oldPassWord;
-    emit(OldPassWordSuccessChange());
-  }
-
-  void changePassWord() {
-    passWord = !passWord;
-    emit(PassWordSuccessChange());
-  }
-
-  void changeConfirmPassWord() {
-    confirm = !confirm;
-    emit(ConfirmPassWordSuccessChange());
+  void clearUserData() {
+    userInMemo = null;
+    selectedImage = null;
+    oldPassWord = false;
+    passWord = false;
+    confirm = false;
+    emit(ProfileInitial());
   }
 }

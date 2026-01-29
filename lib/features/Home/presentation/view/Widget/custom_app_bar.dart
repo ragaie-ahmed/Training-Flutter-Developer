@@ -3,49 +3,41 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
- const  CustomHomeAppBar({super.key, required this.title,required this.profile});
-final bool profile;
+  final bool isProfile;
+
+  const CustomHomeAppBar({super.key, required this.title, required this.isProfile});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
           colors: [Color(0xFF4EB0AD), Color(0xFF1B523D)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(25.r),
-          bottomRight: Radius.circular(25.r),
         ),
       ),
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Row(
-            mainAxisAlignment:profile? MainAxisAlignment.end: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: Container(
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Container(
                   padding: EdgeInsets.all(6.r),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
                   child: Icon(Icons.notifications_none_rounded, color: Colors.white, size: 22.w),
                 ),
               ),
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Tajawal',
+              Align(
+                alignment: isProfile ? AlignmentDirectional.centerEnd : AlignmentDirectional.center,
+                child: Text(
+                  title,
+                  style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold, fontFamily: 'Tajawal'),
                 ),
               ),
-              SizedBox(width: 48.w),
             ],
           ),
         ),
@@ -54,5 +46,5 @@ final bool profile;
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(70.h);
+  Size get preferredSize => Size.fromHeight(80.h); 
 }

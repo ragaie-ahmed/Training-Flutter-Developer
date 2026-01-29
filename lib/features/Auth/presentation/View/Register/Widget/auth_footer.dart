@@ -5,9 +5,9 @@ import 'package:tharadtech/core/utils/app_color.dart';
 class AuthFooter extends StatelessWidget {
   final String questionText;
   final String actionText;
-  final VoidCallback onActionTap;
+  final VoidCallback? onActionTap; 
 
-  const AuthFooter({
+  const AuthFooter({ 
     super.key,
     required this.questionText,
     required this.actionText,
@@ -27,6 +27,7 @@ class AuthFooter extends StatelessWidget {
             color: Colors.grey[600],
           ),
         ),
+        SizedBox(width: 4.w), 
         GestureDetector(
           onTap: onActionTap,
           child: Text(
@@ -35,7 +36,8 @@ class AuthFooter extends StatelessWidget {
               fontFamily: "Tajawal",
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color:Color(AppColor.primaryColor),
+              color: Color(AppColor.primaryColor),
+              decoration: TextDecoration.underline, 
             ),
           ),
         ),
