@@ -11,6 +11,13 @@ import 'package:tharadtech/features/Auth/domain/usecase/register_use_case.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/login/login_cubit.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/otp/otp_cubit.dart';
 import 'package:tharadtech/features/Auth/presentation/manage/register/register_cubit.dart';
+import 'package:tharadtech/features/Profile/Presentation/manage/profile_cubit.dart';
+import 'package:tharadtech/features/Profile/data/data_source/local_data_source_profile.dart';
+import 'package:tharadtech/features/Profile/data/data_source/remote_data_source_profile.dart';
+import 'package:tharadtech/features/Profile/data/repo/repo_profile_implementation.dart';
+import 'package:tharadtech/features/Profile/domain/repo/base_repo_profile.dart';
+import 'package:tharadtech/features/Profile/domain/usecase/get_profile_use_case.dart';
+import 'package:tharadtech/features/Profile/domain/usecase/update_profile_use_case.dart';
 
 final getit = GetIt.instance;
 
@@ -54,5 +61,31 @@ Future<void> setupServiceLocator() async {
 
   getit.registerFactory<LoginCubit>(
         () => LoginCubit(getit<LogInUseCase>()),
+  );
+  //todo services for profile
+  getit.registerLazySingleton<RemoteDataSourceProfile>(
+        () =>
+            RemoteDataSourceProfileImplementation(apiService: getit<ApiService>()),
+  );
+  getit.registerLazySingleton<ProfileLocalDataSource>(
+        () =>
+        ProfileLocalDataSourceImpl(),
+  );
+  getit.registerLazySingleton<BaseRepoProfile>(
+        () => RepoProfileImplementation(
+      remoteDataSourceProfile: getit<RemoteDataSourceProfile>(),
+          localDataSource: getit<ProfileLocalDataSource>()
+
+    ),
+  );
+  //todo useCase and cubit for get Profile
+  getit.registerLazySingleton<GetProfileUseCase>(
+        () => GetProfileUseCase(baseRepoProfile:  getit<BaseRepoProfile>()),
+  );
+  getit.registerLazySingleton<UpdateProfileUseCase>(
+        () => UpdateProfileUseCase(baseRepoProfile:  getit<BaseRepoProfile>()),
+  );
+  getit.registerFactory<ProfileCubit>(
+        () => ProfileCubit(getit<GetProfileUseCase>(),getit<UpdateProfileUseCase>()),
   );
 }
