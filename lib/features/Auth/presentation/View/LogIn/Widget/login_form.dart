@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tharadtech/core/helper/app_locclization.dart';
+import 'package:tharadtech/core/helper/on_generate_routes.dart';
 import 'package:tharadtech/features/Auth/presentation/View/LogIn/Widget/remember_me_section.dart';
 import 'package:tharadtech/features/Auth/presentation/View/Register/Widget/custom_button.dart';
 import 'package:tharadtech/features/Auth/presentation/View/Register/Widget/custom_text_field.dart';
@@ -24,6 +26,10 @@ class _LoginFormState extends State<LoginForm> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+  void clear(){
+    _emailController.clear();
+    _passwordController.clear();
   }
 
   void _login() {
@@ -56,7 +62,7 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    // Call login cubit
+    
     context.read<LoginCubit>().logIn(email: email, passWord: password);
   }
 
@@ -85,12 +91,13 @@ class _LoginFormState extends State<LoginForm> {
               backgroundColor: Colors.green,
             ),
           );
+          context.go(AppRoutes.home);
         }
       },
       builder: (context, state) {
         return Column(
           children: [
-            // Email Field
+            
             CustomTextField(
               title:AppLocalizations.of(context).translate('email_label'),
               hintText:AppLocalizations.of(context).translate('email_hint'),
@@ -100,7 +107,7 @@ class _LoginFormState extends State<LoginForm> {
             
             SizedBox(height: 20.h),
             
-            // Password Field
+            
             CustomTextField(
               title: AppLocalizations.of(context).translate('confirm_password_label'),
               hintText: "**********",
@@ -115,12 +122,12 @@ class _LoginFormState extends State<LoginForm> {
             
             SizedBox(height: 20.h),
             
-            // Remember Me & Forgot Password
+            
             const RememberMeSection(),
             
             SizedBox(height: 30.h),
             
-            // Login Button
+            
             CustomButton(
               text: "Sign In",
               onPressed: _login,

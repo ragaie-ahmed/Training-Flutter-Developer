@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           if (state is AppLocalizationChange) {
             return ScreenUtilInit(
+
               designSize: const Size(375, 812),
               minTextAdapt: true,
               splitScreenMode: true,

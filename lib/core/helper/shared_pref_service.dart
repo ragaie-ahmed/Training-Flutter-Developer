@@ -15,8 +15,13 @@ static const String storedToken="token";
   static Future<String> getSecuredString(String key) async {
     debugPrint('SecureStorage : get $key');
     return await _secureStorage.read(key: key) ?? '';
+
   }
 
+  static Future<void> deleteData(String key) async {
+    debugPrint('SecureStorage : cleared all');
+    await _secureStorage.delete(key: key);
+  }
 
   static Future<void> clearAllSecuredData() async {
     debugPrint('SecureStorage : cleared all');

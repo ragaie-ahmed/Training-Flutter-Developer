@@ -53,7 +53,7 @@ class BuildImage extends StatelessWidget {
               ),
             ),
             
-            // Show error message if there's an image picker error
+            
             if (state is ImagePickedError) ...[
               SizedBox(height: 8.h),
               Container(

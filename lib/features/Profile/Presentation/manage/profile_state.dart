@@ -5,7 +5,7 @@ abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
 
-// ============ Profile Get States ============
+
 
 class ProfileGetLoading extends ProfileState {}
 
@@ -24,7 +24,7 @@ class ProfileGetError extends ProfileState {
   ProfileGetError({required this.error});
 }
 
-// ============ Profile Update States ============
+
 
 class ProfileUpdateLoading extends ProfileState {}
 
@@ -35,7 +35,7 @@ class ProfileUpdateError extends ProfileState {
   ProfileUpdateError({required this.error});
 }
 
-// ============ Image Picker States ============
+
 
 class ImagePickedProfileLoading extends ProfileState {}
 
@@ -51,7 +51,7 @@ class ImagePickedProfileError extends ProfileState {
 
 class ImagePickedProfileRemoved extends ProfileState {}
 
-// ============ Password Visibility States ============
+
 
 class OldPassWordSuccessChange extends ProfileState {}
 

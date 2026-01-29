@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String title; // العنوان فوق الحقل
+  final String title; 
   final String hintText;
-  final IconData? suffixIcon; // الأيقونة في اليسار
+  final IconData? suffixIcon; 
   final bool obscureText;
   final TextInputType keyboardType;
   final TextEditingController? controller;
@@ -37,7 +37,7 @@ class CustomTextField extends StatelessWidget {
             color: const Color(0xFF0F172A),
           ),
         ),
-        SizedBox(height: 8.h), // مسافة بسيطة بين العنوان والحقل
+        SizedBox(height: 8.h), 
         TextFormField(
           controller: controller,
           obscureText: obscureText,

@@ -9,7 +9,7 @@ class HomeHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Welcome Text
+        
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,7 +34,7 @@ class HomeHeader extends StatelessWidget {
           ],
         ),
         
-        // Profile Avatar
+        
         Container(
           width: 50.w,
           height: 50.h,

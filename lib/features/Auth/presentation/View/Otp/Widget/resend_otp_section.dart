@@ -61,7 +61,7 @@ class _ResendOtpSectionState extends State<ResendOtpSection> {
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context)!;
+    final localization = AppLocalizations.of(context);
 
     return Padding(
       padding: EdgeInsets.only(top: 10.h),
@@ -80,7 +80,7 @@ class _ResendOtpSectionState extends State<ResendOtpSection> {
           Row(
             children: [
               Text(
-                "${localization.translate('resend_question') ?? "لم يصلك رمز ؟"} ",
+                "${localization.translate('resend_question') } ",
                 style: TextStyle(
                   fontFamily: "Tajawal",
                   fontSize: 14.sp,
@@ -91,7 +91,7 @@ class _ResendOtpSectionState extends State<ResendOtpSection> {
               GestureDetector(
                 onTap: _canResend ? _resendOtp : null,
                 child: Text(
-                  localization.translate('resend_action') ?? "إعادة إرسال",
+                  localization.translate('resend_action'),
                   style: TextStyle(
                     fontFamily: "Tajawal",
                     fontSize: 14.sp,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tharadtech/core/helper/app_locclization.dart';
+import 'package:tharadtech/core/helper/on_generate_routes.dart';
 import 'package:tharadtech/features/Auth/presentation/View/Otp/Widget/otp_input_field.dart';
 import 'package:tharadtech/features/Auth/presentation/View/Otp/Widget/resend_otp_section.dart';
 import 'package:tharadtech/features/Auth/presentation/View/Register/Widget/custom_button.dart';
@@ -60,6 +62,7 @@ class OtpFormState extends State<OtpForm> {
               backgroundColor: Colors.green,
             ),
           );
+          context.go(AppRoutes.logIn);
         }
       },
       builder: (context, state) {

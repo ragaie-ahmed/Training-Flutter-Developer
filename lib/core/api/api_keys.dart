@@ -7,6 +7,5 @@ class ApiKeys {
   static const message = "message";
   static const id = "id";
   static const confirmPassword = "password_confirmation";
-
   static const otpCode = "code";
 }

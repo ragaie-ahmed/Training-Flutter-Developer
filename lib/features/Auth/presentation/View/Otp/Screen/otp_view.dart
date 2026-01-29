@@ -6,7 +6,6 @@ class OtpView extends StatelessWidget {
 final String email;
   @override
   Widget build(BuildContext context) {
-    print(email);
     return  OtpBody(email: email);
   }
 }

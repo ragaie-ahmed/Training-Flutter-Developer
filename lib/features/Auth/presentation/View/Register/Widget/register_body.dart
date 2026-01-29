@@ -152,7 +152,9 @@ class _RegisterFormState extends State<_RegisterForm> {
                                 'already_have_account',
                               ),
                               actionText: loc.translate('sign_in_action'),
-                              onActionTap: () {},
+                              onActionTap: () {
+                                context.pop();
+                              },
                             ),
                           ],
                         ),
